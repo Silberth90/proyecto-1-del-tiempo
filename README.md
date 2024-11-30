@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-
-# proyecto-1-del-tiempo
+# proyecto-del-tiempo
 
 # weather_project
 
@@ -70,5 +68,3 @@ Opcional: Automatización y Monitoreo
 Si deseas automatizar este proceso, podrías usar un cron job en Linux
 o el Programador de Tareas en Windows para ejecutar el script en
 intervalos regulares.
-
-> > > > > > > master
