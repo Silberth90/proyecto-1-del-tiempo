@@ -2,11 +2,16 @@ import requests
 import pyodbc
 import pandas as pd
 from datetime import datetime
-from claves import API_KEY, conexion
+from dotenv import load_dotenv
+import os
+
+load_dotenv() #cargo las variables de entorno
+API_KEY = os.getenv("KEY") #llave de la api
+conexion = os.getenv("conexion") #url de la base de datos
 
 ## funcion para extraer los datos de la api
 def extract_weather_data(city):
-    url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY()}'
+    url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}'
     print(f"extrayendo datos de la API para la ciudad: {city}")
     response = requests.get(url)
     if response.status_code == 200:
@@ -30,12 +35,13 @@ def transform_data(data):
         'velocidad_viento':data['wind']['speed'],
         'fecha_hora':datetime.now().strftime('%Y%m%d %H:%M')
         }
-    print(transformarDatos)
+    print(pd.DataFrame([transformarDatos]))
     return transformarDatos
+
 ## funcion para cargar los datos en la base de datos
 def load_data(data, cargarBaseDatos = True):
     if cargarBaseDatos == True:
-        conn = pyodbc.connect(conexion())
+        conn = pyodbc.connect(conexion)
         cursor = conn.cursor()
         #verifica si los datos ya existen en la base de datos
         cursor.execute("""SELECT * FROM tiempo
@@ -45,8 +51,9 @@ def load_data(data, cargarBaseDatos = True):
                         data['fecha_hora'])
         existe = cursor.fetchone()
         #si existe, no se cargan los datos
-        if existe is not None and existe[0]>0:
+        if existe is not None :
             print("estos datos ya existen en la base de datos")
+            return
         else:
             cursor.execute("""INSERT INTO tiempo 
                    (ciudad, pais, temperatura, clima, humedad, velocidad_viento, fecha_hora)
@@ -81,3 +88,5 @@ while True:
         break
     else:
         print("no se pudo extraer los datos de la API")
+
+
