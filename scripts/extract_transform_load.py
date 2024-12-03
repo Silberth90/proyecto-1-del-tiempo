@@ -74,7 +74,11 @@ def load_data(data, cargarBaseDatos = True):
 
 ## bucle para que el usuario pueda ingresar la ciudad y extraer los datos
 while True:
-    city = str(input("Ingrese el nombre de la ciudad: "))
+    city = str(input("Ingrese el nombre de la ciudad o 'salir' para terminar: "))
+
+    if city == "salir":
+        break
+
     weather_data = extract_weather_data(city)
 
     ## si los datos no son nulos, se transforman y se cargan en la base de datos
@@ -85,7 +89,6 @@ while True:
         cargarBaseDatos = input("quiere que se cargues los datos en SQL SERVER? (si/no): ").strip().lower() == "si"
         #carga los datos en la base de datos
         load_data(weather_data_transform, cargarBaseDatos)
-        break
     else:
         print("no se pudo extraer los datos de la API")
 
